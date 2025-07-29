@@ -33,22 +33,23 @@ addTaskBtn.addEventListener('click', () => {
   categorySelect.value = 'general';
 });
 // Fetch and display a motivational quote
+const hardcodedQuotes = [
+  { q: "Believe you can and you're halfway there.", a: "Theodore Roosevelt" },
+  { q: "Your time is limited, so don’t waste it living someone else’s life.", a: "Steve Jobs" },
+  { q: "Keep going. Everything you need will come to you.", a: "Unknown" },
+  { q: "The best way out is always through.", a: "Robert Frost" },
+  { q: "Push yourself, because no one else is going to do it for you.", a: "Unknown" },
+  { q: "Dream it. Wish it. Do it.", a: "Unknown" },
+  { q: "Don't watch the clock; do what it does. Keep going.", a: "Sam Levenson" }
+];
+
 function loadQuote() {
   const quoteText = document.getElementById('quote');
-
-  fetch('https://api.quotable.io/random')
-    .then(res => res.json())
-    .then(data => {
-      quoteText.textContent = `"${data.content}" — ${data.author}`;
-    })
-    .catch(err => {
-      quoteText.textContent = `"Keep going. Your future self will thank you." — Unknown`;
-      console.error('Quote fetch error:', err);
-    });
+  const randomIndex = Math.floor(Math.random() * hardcodedQuotes.length);
+  const quote = hardcodedQuotes[randomIndex];
+  quoteText.textContent = `"${quote.q}" — ${quote.a}`;
 }
 
-// Load quote on page load
-window.addEventListener('DOMContentLoaded', loadQuote);
 
 function saveTasks() {
   localStorage.setItem('tasks', JSON.stringify(tasks));
