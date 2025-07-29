@@ -13,15 +13,19 @@
   </header>
 
   <section class="task-input-section">
-    <input type="text" id="task-input" placeholder="Enter a new task..." />
-  <input type="time" id="task-time" />
-  <select id="category-select">
-    <option value="general">General</option>
-    <option value="school">School</option>
-    <option value="work">Work</option>
-    <option value="personal">Personal</option>
-  </select>
-  <button id="add-task-btn">Add Task</button>
+    <form id="task-form">
+      <input type="text" id="task-title" placeholder="Task Title" required />
+      <textarea id="task-desc" placeholder="Task Description"></textarea>
+      <input type="date" id="task-date" />
+      <input type="time" id="task-time" />
+      <select id="category-select">
+        <option value="general">General</option>
+        <option value="school">School</option>
+        <option value="work">Work</option>
+        <option value="personal">Personal</option>
+      </select>
+      <button id="add-task-btn">Add Task</button>
+    </form>
   </section>
 
   <section class="task-controls">
@@ -34,7 +38,7 @@
   </section>
 
   <section id="task-list">
-    <!-- Tasks will be dynamically added here -->
+    <!-- Tasks will appear here -->
   </section>
 
   <footer>
