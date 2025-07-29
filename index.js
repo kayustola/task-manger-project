@@ -1,4 +1,5 @@
 let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let editIndex = null;
 // Get elements
 const taskInput = document.getElementById('task-input');
 const categorySelect = document.getElementById('category-select');
@@ -6,32 +7,32 @@ const addTaskBtn = document.getElementById('add-task-btn');
 const taskList = document.getElementById('task-list');
 const taskTime = document.getElementById('task-time');
 
-// Event listener
-addTaskBtn.addEventListener('click', () => {
-  const taskText = taskInput.value.trim();
-  const category = categorySelect.value;
-  const time = taskTime.value || 'No time set';
+function addTask(e) {
+  e.preventDefault();
 
-  if (taskText === '') {
-    alert('Please enter a task.');
-    return;
+  const title = document.getElementById('task-title').value.trim();
+  const description = document.getElementById('task-desc').value.trim();
+  const date = document.getElementById('task-date').value;
+  const time = document.getElementById('task-time').value;
+
+  if (!title) return;
+
+  let tasks = getTasksFromStorage();
+
+  if (editIndex !== null) {
+    // We are editing an existing task
+    tasks[editIndex] = { title, description, date, time };
+    editIndex = null;
+    document.getElementById('add-task-btn').textContent = 'Add Task';
+  } else {
+    // We are adding a new task
+    tasks.push({ title, description, date, time });
   }
 
-  const task = {
-    id: Date.now(),
-    text: taskText,
-    category,
-    time
-  };
-
-  tasks.push(task);
-  saveTasks();
-  renderTask(task);
-
-  taskInput.value = '';
-  taskTime.value = '';
-  categorySelect.value = 'general';
-});
+  saveTasksToStorage(tasks);
+  renderTasks();
+  document.getElementById('task-form').reset();
+}
 // Fetch and display a motivational quote
 const hardcodedQuotes = [
   { q: "Believe you can and you're halfway there.", a: "Theodore Roosevelt" },
@@ -67,8 +68,23 @@ function renderTask(task) {
       <small>🕒 ${task.time}</small>
     </p>
     <button class="delete-btn">🗑️</button>
+    editBtn.innerHTML = '✏️'; // Add this after your deleteBtn
+editBtn.classList.add('edit-btn');
+editBtn.addEventListener('click', () => editTask(index));
+taskActions.appendChild(editBtn);
   `;
+function editTask(index) {
+  const tasks = getTasksFromStorage();
+  const task = tasks[index];
 
+  document.getElementById('task-title').value = task.title;
+  document.getElementById('task-desc').value = task.description;
+  document.getElementById('task-date').value = task.date;
+  document.getElementById('task-time').value = task.time;
+
+  editIndex = index;
+  document.getElementById('add-task-btn').textContent = 'Update Task';
+}
   const deleteBtn = taskItem.querySelector('.delete-btn');
   deleteBtn.addEventListener('click', () => {
     taskList.removeChild(taskItem);
@@ -82,3 +98,22 @@ window.addEventListener('DOMContentLoaded', () => {
   loadQuote(); // already exists
   tasks.forEach(task => renderTask(task));
 });
+
+let editIndex = null; // This keeps track of which task you're editing
+
+function editTask(index) {
+  const tasks = getTasksFromStorage(); // Get current task list
+  const task = tasks[index]; // Get the task at that position
+
+  // Fill the form with the task details
+  document.getElementById('task-title').value = task.title;
+  document.getElementById('task-desc').value = task.description;
+  document.getElementById('task-date').value = task.date;
+  document.getElementById('task-time').value = task.time;
+
+  // Remember which task you're editing
+  editIndex = index;
+
+  // Change the button text to 'Update Task'
+  document.getElementById('add-task-btn').textContent = 'Update Task';
+}
